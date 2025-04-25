@@ -3,10 +3,21 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-export default function MediaGallery() {
-    
+interface MediaGalleryProps {
+  onSelect?: (imageUrl: string) => void
+}
+
+interface MediaItem {
+  id: string
+  url: string
+  alt?: string
+  width?: number
+  height?: number
+}
+
+export default function MediaGallery({ onSelect }: MediaGalleryProps) {
   const [loading, setLoading] = useState(true)
-  const [mediaData, setMediaData] = useState<any[]>([])
+  const [mediaData, setMediaData] = useState<MediaItem[]>([])
 
   useEffect(() => {
     const fetchMedia = async () => {
@@ -33,30 +44,22 @@ export default function MediaGallery() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Media Gallery</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mediaData.map((item) => (
-          <div key={item.id} className="rounded-lg overflow-hidden shadow-lg">
-            {item.url ? (
-              <Image 
-                src={item.url}
-                alt={item.alt ? String(item.alt) : 'Media image'}
-                width={500}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
-            ) : (
-              <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                <span>No image available</span>
-              </div>
-            )}
-            <div className="px-6 py-4">
-             
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-4 gap-4">
+      {mediaData.map((image) => (
+        <div 
+          key={image.id} 
+          className="cursor-pointer hover:opacity-80"
+          onClick={() => onSelect?.(image.url)}
+        >
+          <Image
+            src={image.url}
+            alt={image.alt || 'Media item'}
+            width={200}
+            height={200}
+            className="object-cover"
+          />
+        </div>
+      ))}
     </div>
   )
 }

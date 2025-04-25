@@ -1,12 +1,15 @@
+
 import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
 import { fileURLToPath } from 'url'
 import MediaGallery from './components/MediaGallery'
+import ProductList from './components/ProductList'
 
 import config from '@/payload.config'
 import './styles.css'
+import AddProductForm from './components/AddProductForm'
+
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -17,6 +20,19 @@ export default async function HomePage() {
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
   return (
- <div><MediaGallery/></div> 
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Products</h1>
+
+  
+
+      <div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Product List</h2>
+       
+        <AddProductForm/>
+      </div>
+    </div>
+    </div>
   )
 }
