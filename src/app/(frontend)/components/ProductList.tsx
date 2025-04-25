@@ -1,20 +1,29 @@
 import React from 'react'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import Image from 'next/image'
 
-export default async function ProductList() {
-  const payload = await getPayload({ config: await config })
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  image?: {
+    url: string
+  } | string
+}
 
-  const { docs: products } = await payload.find({
-    collection: 'products',
-    depth: 1,
-    limit: 10,
-  })
+export default async function ProductList() {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || ''
+  const response = await fetch(`${baseUrl}/api/products`)
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch products')
+  }
+
+  const { docs: products } = await response.json()
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {products.map((product) => (
+      {(products as Product[]).map((product) => (
         <div key={product.id} className="border rounded-lg p-4">
           {product.image && typeof product.image !== 'string' && (
             <div className="relative aspect-square mb-4">
