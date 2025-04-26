@@ -1,5 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 
 interface Product {
   id: string
@@ -12,17 +14,13 @@ interface Product {
 }
 
 export default async function ProductList() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || ''
-  const apiUrl = `${baseUrl}/api/products`
-  
   try {
-    const response = await fetch(apiUrl)
+    const payload = await getPayload({ config })
     
-    if (!response.ok) {
-      throw new Error('Failed to fetch products')
-    }
-
-    const { docs: products } = await response.json()
+    const { docs: products } = await payload.find({
+      collection: 'products',
+      depth: 1 // Include related documents
+    })
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
