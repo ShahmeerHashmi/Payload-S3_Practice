@@ -7,14 +7,24 @@ export async function createProduct(formData: FormData) {
   try {
     const payload = await getPayload({ config })
     
-    // First upload the image if needed (or get existing media doc)
-    const mediaResponse = await payload.create({
-      collection: 'media',
-      data: {
-        alt: formData.get('name') as string,
-        url: formData.get('image') as string
-      }
-    })
+    // Check if we're using an existing media ID or a new image URL
+    const imageInput = formData.get('image') as string
+    let imageId: string
+
+    if (imageInput.startsWith('http')) {
+      // If it's a URL, create new media document
+      const mediaResponse = await payload.create({
+        collection: 'media',
+        data: {
+          alt: formData.get('name') as string,
+          url: imageInput
+        }
+      })
+      imageId = mediaResponse.id
+    } else {
+      // Otherwise assume it's an existing media ID
+      imageId = imageInput
+    }
 
     return await payload.create({
       collection: 'products',
@@ -22,7 +32,7 @@ export async function createProduct(formData: FormData) {
         name: formData.get('name') as string,
         description: formData.get('description') as string,
         price: Number(formData.get('price')),
-        image: mediaResponse.id // Use the media document ID
+        image: imageId
       }
     })
   } catch (error) {
