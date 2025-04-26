@@ -7,12 +7,13 @@ import MediaGallery from './MediaGallery'
 
 export default function AddProductForm() {
   const router = useRouter()
-  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [selectedImageId, setSelectedImageId] = useState<string>('')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    formData.set('image', selectedImage) // Use selected image instead of input
+    formData.set('image', selectedImageId) // send image ID, not URL
+
     try {
       await createProduct(formData)
       router.refresh()
@@ -21,8 +22,8 @@ export default function AddProductForm() {
     }
   }
 
-  const handleImageSelect = (imageUrl: string) => {
-    setSelectedImage(imageUrl)
+  const handleImageSelect = (imageId: string) => {
+    setSelectedImageId(imageId)
   }
 
   return (
@@ -55,12 +56,10 @@ export default function AddProductForm() {
       </div>
       <div>
         <label className="block mb-1">Selected Image</label>
-        {selectedImage && (
-          <img 
-            src={selectedImage} 
-            alt="Selected product" 
-            className="w-32 h-32 object-cover mb-2"
-          />
+        {selectedImageId && (
+          <div className="w-32 h-32 bg-gray-200 mb-2 flex items-center justify-center text-xs">
+            Selected Image ID: {selectedImageId}
+          </div>
         )}
         <MediaGallery onSelect={handleImageSelect} />
       </div>

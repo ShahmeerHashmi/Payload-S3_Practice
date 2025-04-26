@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface MediaGalleryProps {
-  onSelect?: (imageUrl: string) => void
+  onSelect?: (imageId: string) => void // IMPORTANT: Pass ID now
 }
 
 interface MediaItem {
@@ -49,7 +49,7 @@ export default function MediaGallery({ onSelect }: MediaGalleryProps) {
         <div 
           key={image.id} 
           className="cursor-pointer hover:opacity-80"
-          onClick={() => onSelect?.(image.url)}
+          onClick={() => onSelect?.(image.id)} // Send image ID instead of URL
         >
           <Image
             src={image.url}
@@ -63,4 +63,3 @@ export default function MediaGallery({ onSelect }: MediaGalleryProps) {
     </div>
   )
 }
-
